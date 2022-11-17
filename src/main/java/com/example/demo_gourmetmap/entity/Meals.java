@@ -28,12 +28,11 @@ public class Meals {
 	public Meals() {
 		
 	}
-
-	public Meals(String mealsStoreNameId, String mealsId, int price, double mealsEvaluation) {
+	
+	public Meals(String mealsStoreNameId, String mealsId, int price) {
 		this.mealsStoreNameId = mealsStoreNameId;
 		this.mealsId = mealsId;
 		this.price = price;
-		this.mealsEvaluation = mealsEvaluation;
 	}
 
 	public String getMealsStoreNameId() {

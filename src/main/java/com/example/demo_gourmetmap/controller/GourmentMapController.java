@@ -41,4 +41,19 @@ public class GourmentMapController {
 		gourmetMapRes = restaurantService.deleteRestaurant(req.getStoreNameId());
 		return gourmetMapRes;
 	}
+	
+/*Meals*/
+	// 新增
+	@PostMapping(value = "/api/addMeals")
+	public GourmetMapRes addMeals (@RequestBody GourmetMapReq req) {
+		GourmetMapRes gourmetMapRes = new GourmetMapRes();
+		gourmetMapRes = restaurantService.addMeals(req.getMealsStoreNameId(), req.getMealsId(), req.getPrice());
+		return gourmetMapRes;
+	}
+	
+	//==========================================================================
+	// 修改
+	
+	//==========================================================================
+	//刪除
 }

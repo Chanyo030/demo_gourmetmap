@@ -1,6 +1,5 @@
 package com.example.demo_gourmetmap.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,16 +8,17 @@ import org.springframework.util.StringUtils;
 
 import com.example.demo_gourmetmap.constants.GourmetMapRtnCode;
 import com.example.demo_gourmetmap.entity.Meals;
+import com.example.demo_gourmetmap.entity.MealsId;
 import com.example.demo_gourmetmap.entity.Restaurant;
 import com.example.demo_gourmetmap.repository.MealsDao;
 import com.example.demo_gourmetmap.repository.RestaurantDao;
 import com.example.demo_gourmetmap.service.ifs.GourmetMapService;
 import com.example.demo_gourmetmap.vo.GourmetMapRes;
 
-@Service
+@Service    // 讓Spring Boot託管 這樣才有辦法在其他地方被@Autowired
 public class GourmetMapServiceImpl implements GourmetMapService {
 
-	@Autowired
+	@Autowired   //依賴    預設會依注入對象的類別型態來選擇容器中相符的物件來注入。
 	private RestaurantDao restaurantDao;
 
 	private MealsDao mealsDao;
@@ -28,11 +28,7 @@ public class GourmetMapServiceImpl implements GourmetMapService {
 	// 新增
 	public GourmetMapRes addRestaurant(String storeNameId, String city) {
 
-		if (!StringUtils.hasText(storeNameId)) { // 店名為空
-			return new GourmetMapRes(GourmetMapRtnCode.NOT_NULL.getMessage());
-		}
-
-		if (!StringUtils.hasText(city)) { // 城市為空
+		if (!StringUtils.hasText(storeNameId) || !StringUtils.hasText(city) ) {  // 店名、城市為空
 			return new GourmetMapRes(GourmetMapRtnCode.NOT_NULL.getMessage());
 		}
 
@@ -55,11 +51,7 @@ public class GourmetMapServiceImpl implements GourmetMapService {
 	@Override
 	public GourmetMapRes updateRestaurant(String storeNameId, String city) {
 
-		if (!StringUtils.hasText(storeNameId)) { // 店名為空
-			return new GourmetMapRes(GourmetMapRtnCode.NOT_NULL.getMessage());
-		}
-
-		if (!StringUtils.hasText(city)) { // 城市為空
+		if (!StringUtils.hasText(storeNameId) || !StringUtils.hasText(city)) { // 店名、城市為空
 			return new GourmetMapRes(GourmetMapRtnCode.NOT_NULL.getMessage());
 		}
 
@@ -99,27 +91,23 @@ public class GourmetMapServiceImpl implements GourmetMapService {
 	// 新增
 	@Override
 	public GourmetMapRes addMeals(String mealsStoreNameId, String mealsId, int price) {
-		if(!StringUtils.hasText(mealsStoreNameId)) {                  //店名為空
+		
+		//店名、餐點名稱、價格為空
+		if(!StringUtils.hasText(mealsStoreNameId) || !StringUtils.hasText(mealsId) || price == 0) {  
 			return new GourmetMapRes(GourmetMapRtnCode.NOT_NULL.getMessage());
 		}
 		
-		if(!StringUtils.hasText(mealsId)) {                               //餐點名稱為空
-			return new GourmetMapRes(GourmetMapRtnCode.NOT_NULL.getMessage());
+		MealsId mealsIdClass = new MealsId(mealsStoreNameId, mealsId);        //取得複合主鍵的內容
+		Optional<Meals> mealsIdOp = mealsDao.findById(mealsIdClass);          //再看DB裡是否有複合主鍵這兩個東西
+		if(mealsIdOp.isPresent()) {                    //有，那就去判斷店名、餐點是否存在(重複)
+			return new GourmetMapRes(GourmetMapRtnCode.STORE_NAME_AND_MEALS_EXISTED.getMessage());
 		}
 		
-		if(price == 0) {                                                     //價格為空
-			return new GourmetMapRes(GourmetMapRtnCode.NOT_NULL.getMessage());
-		}
-		
-//		Optional<Meals> mealsOp = mealsDao.findAllById(mealsStoreNameId, mealsId);
-		List <Meals> mealsList = mealsDao.findAllById(mealsStoreNameId, mealsId);
-		
-		Meals meals = new Meals();
-		meals.setMealsStoreNameId(mealsStoreNameId);
-		meals.setMealsId(mealsId);
-		meals.setPrice(price);
-
-		return null;
+		Meals meale = new Meals(mealsStoreNameId, mealsId, price);
+		mealsDao.save(meale);
+		GourmetMapRes gourmetMapRes = new GourmetMapRes();
+		gourmetMapRes.setMeals(meale);
+		return gourmetMapRes;
 	}
 
 	// ========================================================================

@@ -8,6 +8,7 @@ public enum GourmetMapRtnCode {
 	QUERY_SUCCESSFUL ("200","Query Successful"),   //查詢
 	NOT_NULL ("400","Value can not null!!!"),  //欄位不得為空
 	STORE_NAME_EXISTED("400","store name existed"),  //店名已存在
+	STORE_NAME_AND_MEALS_EXISTED("400","store name existed"),  //店名、餐點已存在
 	NO_DATA("400","no data"); //查無資訊
 
 	private String code;

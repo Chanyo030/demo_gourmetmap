@@ -1,5 +1,6 @@
 package com.example.demo_gourmetmap.vo;
 
+import com.example.demo_gourmetmap.entity.Meals;
 import com.example.demo_gourmetmap.entity.Restaurant;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -7,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class GourmetMapRes {
 	
 	private Restaurant restaurant;
+	
+	private Meals meals;
 
 	// Restaurant À\ÆU
 
@@ -65,6 +68,16 @@ public class GourmetMapRes {
 
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
+	}
+
+
+	public Meals getMeals() {
+		return meals;
+	}
+
+
+	public void setMeals(Meals meals) {
+		this.meals = meals;
 	}
 
 
